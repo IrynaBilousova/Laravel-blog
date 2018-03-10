@@ -13,7 +13,7 @@
             My first laravel APP :)
 
             line added
-            azazaza
+            trololo
         </h1>
     </body>
 </html>
