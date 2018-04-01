@@ -15,6 +15,7 @@ Route::get('/', function () {
     return redirect('/posts');
 });
 
+
 Route::resource('posts', 'PostController');
 Route::post('/posts/{post}' , 'CommentController@store');
 Auth::routes();

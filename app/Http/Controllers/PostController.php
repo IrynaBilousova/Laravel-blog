@@ -8,6 +8,11 @@ use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth')->except(['index', 'show']);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -26,7 +31,7 @@ class PostController extends Controller
      */
     public function create()
     {
-        //
+        return view('posts.create');
     }
 
     /**
@@ -35,9 +40,12 @@ class PostController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request) //:TODO Почистить тут код. Почему автоматически id не записывалось?
     {
-        //
+        $attr = $request->all();
+        $attr['user_id'] = auth()->id();
+        $post = Post::create($attr);
+        return redirect('posts/'. $post->id);
     }
 
     /**

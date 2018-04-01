@@ -2,9 +2,6 @@
 
 @section('content')
 
-    @php
-
-    @endphp
     <div class="content">
         <div class="row justify-content-center">
             <div class="col-md-8">
@@ -36,7 +33,7 @@
                             <div class="form-group">
                                 <textarea rows="5" id="text" name="text" class="form-control" placeholder="Add comment..."></textarea>
                             </div>
-                            <button type="submit" class="btn btn-success">Add comment</button>
+                            <button type="submit" class="btn btn-primary">Add comment</button>
                         </form>
                     @else
                     <p>Please <a href="{{route('login')}}">sign in</a> to add comment</p>

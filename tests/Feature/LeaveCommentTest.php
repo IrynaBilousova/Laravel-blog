@@ -7,25 +7,21 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class LeaveCommentTest extends TestCase
 {
-    public function testAnUnauthenticatedUserMayNotLeaveComment() //:TODO не работает тест, похоже на ошибку в фабрике
+    public function testAGuestMayNotLeaveComment()
     {
-
         $this->expectException('Illuminate\Auth\AuthenticationException');
 
-
         $this->post('/posts/1' , []);
-
-
     }
 
-   public function testAnAuthenticatedUserMayLeaveComment() //:TODO не работает тест, похоже на ошибку в фабрике
+   public function testAnAuthenticatedUserMayLeaveComment()
     {
+        //Given we have a signed in user
+        $this->signIn();
 
-        $this->be($user = factory('App\User')->create());
+        $post = create('App\Post');
 
-        $post = factory('App\Post')->create();
-
-        $comment = factory('App\Comment')->make();
+        $comment = make('App\Comment');
 
         $this->post('/posts/' . $post->id . "/", $comment->toArray());
 
