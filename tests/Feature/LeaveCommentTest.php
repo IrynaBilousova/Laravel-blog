@@ -10,21 +10,31 @@ class LeaveCommentTest extends TestCase
     public function testAGuestMayNotLeaveComment()
     {
         $this->expectException('Illuminate\Auth\AuthenticationException');
-
-        $this->post('/posts/1' , []);
+        $post = create('App\Post');
+        $this->post(route('show_post', ['category' =>$post->category->slug, 'id' => $post->id]) , []);
     }
 
    public function testAnAuthenticatedUserMayLeaveComment()
     {
-        //Given we have a signed in user
         $this->signIn();
 
         $post = create('App\Post');
 
         $comment = make('App\Comment');
 
-        $this->post('/posts/' . $post->id . "/", $comment->toArray());
+        $this->post($post->path() , $comment->toArray());
 
-        $this->get('/posts/' . $post->id)->assertSee($comment->text);
+        $this->get( $post->path())->assertSee($comment->text);
+    }
+
+    public function testACommentRequiresAText()
+    {
+        $this->expectException('Illuminate\Validation\ValidationException');
+        $this->signIn();
+        $post = create('App\Post');
+
+        $comment = make('App\Comment', ['text' => null]);
+
+        $this->post($post->path() , $comment->toArray())->assertSessionHasErrors('text');
     }
 }

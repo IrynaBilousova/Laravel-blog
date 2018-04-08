@@ -32,6 +32,24 @@
                                 All Posts
                             </a>
                         </li>
+                        <li>
+                            <a class="navbar-brand" href="{{ url('/posts/create') }}">
+                               New Post
+                            </a>
+                        </li>
+                        <li>
+                            <div class="dropdown">
+                                <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Categories
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    @foreach($categories as $category)
+                                    <a class="dropdown-item" href="{{route('posts_with_category', $category->slug)}}">{{$category->name}}</a>
+                                    @endforeach
+                                </div>
+                            </div>
+
+                        </li>
                     </ul>
 
                     <!-- Right Side Of Navbar -->

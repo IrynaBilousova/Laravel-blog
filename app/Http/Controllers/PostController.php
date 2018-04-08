@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Category;
 use App\Post;
 use App\Comment;
 use Illuminate\Http\Request;
@@ -18,9 +19,13 @@ class PostController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Category $category)
     {
-        $posts = Post::latest()->paginate(5);
+        if($category->exists) {
+            $posts = $category->posts()->latest()->paginate(5);
+        } else {
+            $posts = Post::latest()->paginate(10);
+        }
         return view('posts.index', compact('posts'));
     }
 
@@ -40,12 +45,18 @@ class PostController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request) //:TODO Почистить тут код. Почему автоматически id не записывалось?
+    public function store(Request $request) //:TODO Почему автоматически id не записывалось?
     {
+        $request->validate([
+            'title' => 'required|max:255',
+            'body' => 'required',
+            'category_id' => 'required|exists:categories,id'
+        ]);
+
         $attr = $request->all();
         $attr['user_id'] = auth()->id();
         $post = Post::create($attr);
-        return redirect('posts/'. $post->id);
+        return redirect($post->path());
     }
 
     /**
@@ -54,11 +65,11 @@ class PostController extends Controller
      * @param  \App\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($categoryId, $id)
     {
-        $post = Post::find($id);
+        $post = Post::with('category')->find($id);
         $comments = Comment::where('post_id', $id)->with('author')->get();
-        return view('posts.show', compact(['post' , 'comments']));
+        return view('posts.show', compact(['post' , 'comments', ]));
     }
 
     /**

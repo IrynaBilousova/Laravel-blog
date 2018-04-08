@@ -39,11 +39,16 @@ class CommentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Post $post, Request $request)
+    public function store($category, $id, Request $request)
     {
+        $request->validate([
+            'text' => 'required'
+        ]);
+
+        $post = Post::find($id);
         $post->addComment([
            'text' => $request->input('text'),
-            'user_id' => auth()->id()
+            'user_id' => auth()->id(),
         ]);
         return back();
     }

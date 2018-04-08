@@ -9,7 +9,7 @@
                     <div class="card">
                         <div class="card-header">
                             <h1>
-                                <a class="title" href="{{url("/posts/{$post->id}")}}">{{$post->title}}</a>
+                                <a class="title" href="{{route('show_post', ['category' =>$post->category->slug, 'id' => $post->id])}}">{{$post->title}}</a>
                             </h1>
                         </div>
 

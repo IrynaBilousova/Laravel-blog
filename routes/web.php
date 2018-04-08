@@ -16,8 +16,12 @@ Route::get('/', function () {
 });
 
 
-Route::resource('posts', 'PostController');
-Route::post('/posts/{post}' , 'CommentController@store');
+Route::resource('posts', 'PostController')->except('show');
+Route::get('posts/{category}', 'PostController@index')->name('posts_with_category');
+Route::get('posts/{category}/{id}', 'PostController@show')->name('show_post');
+
+Route::post('/posts/{category}/{id}' , 'CommentController@store');
+Route::post('posts', 'PostController@store');
 Auth::routes();
 
 

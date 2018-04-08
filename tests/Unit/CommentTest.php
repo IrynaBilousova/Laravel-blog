@@ -15,7 +15,7 @@ class CommentTest extends TestCase
      */
     public function testCommentHasAnAuthor()
     {
-        $comment = factory('App\Comment')->create(['post_id' => 1 ]);
+        $comment = create('App\Comment',['post_id' => 1 ]);
         $this->assertInstanceOf('App\User', $comment->author);
     }
 }
