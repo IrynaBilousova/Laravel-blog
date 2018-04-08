@@ -43,4 +43,16 @@ class ViewPostTest extends TestCase
             ->assertSee($postInCategory->title)
             ->assertDontSee($postNotInCategory->title);
     }
+
+    public function testAUserCanFilterPostsByAnyUsername()
+    {
+        $this->signIn(create('App\User', ['name' => 'IraBilous']));
+
+        $postByIraBilous = create('App\Post', ['user_id' => auth()->id()]);
+        $postNotByIraBilous = create('App\Post');
+
+        $this->get('posts?by=IraBilous')
+            ->assertSee($postByIraBilous->title)
+            ->assertDontSee($postNotByIraBilous->title);
+    }
 }

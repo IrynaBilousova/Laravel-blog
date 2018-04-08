@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Category;
+use App\User;
 use App\Post;
 use App\Comment;
 use Illuminate\Http\Request;
@@ -22,10 +23,17 @@ class PostController extends Controller
     public function index(Category $category)
     {
         if($category->exists) {
-            $posts = $category->posts()->latest()->paginate(5);
+            $posts = $category->posts()->latest();
         } else {
-            $posts = Post::latest()->paginate(10);
+            $posts = Post::latest();
         }
+
+        if($username = request('by'))
+        {
+            $user = User::where('name', $username)->firstOrFail();
+            $posts->where('user_id', $user->id);
+        }
+        $posts=$posts->paginate(10);
         return view('posts.index', compact('posts'));
     }
 
