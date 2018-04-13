@@ -11,7 +11,19 @@
                 <p>
                     {{$post->body}}
                 </p>
-                <p>Written by  <a href="#"> {{$post->author->name}}</a> </p>
+                <div class="row justify-content-end">
+                    <form action="{{"/posts/{$post->category->slug}/{$post->id}/favorites"}}" method="POST">
+                        {{csrf_field()}}
+                        <button class="btn btn-default" {{$post->isFavorited() ? 'disabled' : ''}}>
+                            {{ str_plural('Favorite', $post->favorites()->count()) . ' ' . $post->favorites()->count()}}
+                        </button>
+                    </form>
+                </div>
+                <p>Written by  <a href="#"> {{$post->author->name}}</a><br> posted {{$post->created_at->diffForHumans()}} </p>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-md-8 ">
                 <h3>Comments ({{count($comments)}})</h3>
                 <p>
                 @foreach($comments as $comment)
@@ -22,11 +34,8 @@
                     <br>
                     {{$comment->created_at->diffForHumans()}}
                     @endforeach
+                    {{$comments->links()}}
                     </p>
-            </div>
-        </div>
-        <div class="row justify-content-center">
-            <div class="col-md-8 col-md-offset-2">
                 @if(auth()->check())
                         <form method="POST">
                             {{ csrf_field() }}

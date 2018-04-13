@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Category;
-use App\User;
+use App\Filters\Postfilters;
 use App\Post;
 use App\Comment;
 use Illuminate\Http\Request;
@@ -20,20 +20,22 @@ class PostController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Category $category)
+    public function index(Category $category,  Postfilters $filters)
     {
+        //:TODO вкладка "Browse" как в видео 17
         if($category->exists) {
             $posts = $category->posts()->latest();
         } else {
             $posts = Post::latest();
         }
 
-        if($username = request('by'))
+        $posts = $posts->filter($filters)->paginate(10);
+
+        if(request()->wantsJson())
         {
-            $user = User::where('name', $username)->firstOrFail();
-            $posts->where('user_id', $user->id);
+            return $posts;
         }
-        $posts=$posts->paginate(10);
+
         return view('posts.index', compact('posts'));
     }
 
@@ -76,7 +78,7 @@ class PostController extends Controller
     public function show($categoryId, $id)
     {
         $post = Post::with('category')->find($id);
-        $comments = Comment::where('post_id', $id)->with('author')->get();
+        $comments = Comment::where('post_id', $id)->with('author')->paginate(10);
         return view('posts.show', compact(['post' , 'comments', ]));
     }
 

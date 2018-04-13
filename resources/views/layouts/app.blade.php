@@ -27,11 +27,30 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav mr-auto">
-                        <li>
-                            <a class="navbar-brand" href="{{ url('/posts') }}">
-                                All Posts
-                            </a>
+                        <li class="dropdown">
+                            <button class="btn btn-light dropdown-toggle" type="button" data-toggle="dropdown">Browse<span class="caret"></span></button>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a class="navbar-brand" href="{{ url('/posts') }}">
+                                        All Posts
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="navbar-brand" href="{{ url('/posts?popular=1') }}">
+                                        Popular
+                                    </a>
+                                </li>
+                                @if(auth()->check())
+                                    <li>
+                                        <a class="navbar-brand" href="{{ url('/posts?by=' . auth()->user()->name) }}">
+                                            My Posts
+                                        </a>
+                                    </li>
+                                @endif
+                            </ul>
                         </li>
+
+
                         <li>
                             <a class="navbar-brand" href="{{ url('/posts/create') }}">
                                New Post
@@ -39,7 +58,7 @@
                         </li>
                         <li>
                             <div class="dropdown">
-                                <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     Categories
                                 </button>
                                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
