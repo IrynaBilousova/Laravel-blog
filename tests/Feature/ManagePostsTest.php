@@ -77,11 +77,9 @@ class ManagePostsTest extends TestCase
 
     public function testAPostCanBeDeletedByItsAuthor()
     {
-        $user = create('App\User');
+        $this->signIn();
 
-        $this->signIn($user);
-
-        $post = create('App\Post', ['user_id' => $user->id]);
+        $post = create('App\Post', ['user_id' => auth()->id()]);
 
         $comment = create('App\Comment', ['post_id' => $post->id]);
 
