@@ -5,7 +5,7 @@
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-md-8">
-                    @foreach($posts as $post)
+                    @forelse($posts as $post)
                     <div class="card">
                         <div class="card-header">
                             @php
@@ -23,7 +23,9 @@
                             </p>
                         </div>
                     </div>
-                    @endforeach
+                        @empty
+                        <p>There are no relevant results for this time.</p>
+                    @endforelse
                     {{  $posts->links() }}
 
                 </div>

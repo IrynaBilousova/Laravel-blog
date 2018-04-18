@@ -26,7 +26,7 @@ class PostController extends Controller
         if($category->exists) {
             $posts = $category->posts()->latest();
         } else {
-            $posts = Post::latest();
+            $posts = Post::with('category')->latest();
         }
 
         $posts = $posts->filter($filters)->paginate(10);
@@ -75,44 +75,28 @@ class PostController extends Controller
      * @param  \App\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function show($categoryId, $id)
+    public function show($category, Post $post)
     {
-        $post = Post::with('category')->find($id);
-        $comments = Comment::where('post_id', $id)->with('author')->paginate(10);
-        return view('posts.show', compact(['post' , 'comments', ]));
+        $comments = $post->comments()->with('author')->paginate(10);
+        return view('posts.show', compact(['post' , 'comments' ]));
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Remove the specified post  from storage.
      *
-     * @param  \App\Post  $post
-     * @return \Illuminate\Http\Response
+     * @param $category
+     * @param Post $post
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|\Symfony\Component\HttpFoundation\Response
+     * @throws \Exception
      */
-    public function edit(Post $post)
+    public function destroy($category, Post $post)
     {
-        //
-    }
+        $this->authorize('update', $post);
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Post  $post
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Post $post)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Post  $post
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Post $post)
-    {
-        //
+        $post->delete();
+        if(\request()->wantsJson()){
+            return response([], 200);
+        }
+        return redirect('/posts');
     }
 }

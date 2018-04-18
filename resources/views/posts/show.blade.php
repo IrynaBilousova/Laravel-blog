@@ -15,11 +15,18 @@
                     <form action="{{"/posts/{$post->category->slug}/{$post->id}/favorites"}}" method="POST">
                         {{csrf_field()}}
                         <button class="btn btn-default" {{$post->isFavorited() ? 'disabled' : ''}}>
-                            {{ str_plural('Favorite', $post->favorites()->count()) . ' ' . $post->favorites()->count()}}
+                            {{ str_plural('Favorite', $post->favorites_count) . ' ' . $post->favorites_count}}
                         </button>
                     </form>
                 </div>
-                <p>Written by  <a href="#"> {{$post->author->name}}</a><br> posted {{$post->created_at->diffForHumans()}} </p>
+                <p>Written by  <a href="{{  route('profile', $post->author->name) }}"> {{$post->author->name}}</a><br> posted {{$post->created_at->diffForHumans()}} </p>
+                @can('update', $post)
+                    <form action="{{url($post->path())}}" method="Post">
+                        {{ csrf_field() }}
+                        {{ method_field('DELETE') }}
+                        <button class="btn btn-link">Delete</button>
+                    </form>
+                @endcan
             </div>
         </div>
         <div class="row justify-content-center">
@@ -28,7 +35,7 @@
                 <p>
                 @foreach($comments as $comment)
                     <hr>
-                    <a href="#">{{$comment->author->name}}</a>
+                    <a href="{{ route('profile', $comment->author->name) }}">{{$comment->author->name}}</a>
                     <br>
                     {{$comment->text}}
                     <br>

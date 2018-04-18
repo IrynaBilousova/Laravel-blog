@@ -6,7 +6,7 @@ use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class CreatePostsTest extends TestCase
+class ManagePostsTest extends TestCase
 {
     public function testGuestsMayNotCreatePosts()
     {
@@ -50,10 +50,47 @@ class CreatePostsTest extends TestCase
     public function publishPost($overrides = [])
     {
         $this->expectException('Illuminate\Validation\ValidationException');
+
         $this->signIn();
 
-        $thread = make('App\Post', $overrides);
+        $post = make('App\Post', $overrides);
 
-        return $this->post('/posts', $thread->toArray());
+        return $this->post('/posts', $post->toArray());
+    }
+
+    public function testGuestsAndNotAuthorsMayNotDeletePosts()
+    {
+        $this->expectException('Illuminate\Auth\AuthenticationException');
+
+        $post = create('App\Post');
+
+        $this->json('DELETE', $post->path());
+
+        $this->assertRedirect('/login');
+
+        $this->signIn();
+
+        $this->delete($post->path())
+        ->assertStatusCode(403);
+
+    }
+
+    public function testAPostCanBeDeletedByItsAuthor()
+    {
+        $user = create('App\User');
+
+        $this->signIn($user);
+
+        $post = create('App\Post', ['user_id' => $user->id]);
+
+        $comment = create('App\Comment', ['post_id' => $post->id]);
+
+        $response = $this->json('DELETE', $post->path());
+
+        $response->assertStatus(200);
+
+        $this->assertDatabaseMissing('posts', ['id' => $post->id]);
+        $this->assertDatabaseMissing('comments', ['id' => $comment->id]);
+
     }
 }
