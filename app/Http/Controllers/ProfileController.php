@@ -9,9 +9,11 @@ class ProfileController extends Controller
 {
     public function show(User $user)
     {
+        $activities = $user->activity()->with('subject')->paginate(10);
         return view('profiles.show', [
             'profileUser' => $user,
-            'posts'       => $user->posts()->paginate(10),
+            'activities'       => $activities,
         ]);
+
     }
 }

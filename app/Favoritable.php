@@ -11,6 +11,13 @@ namespace App;
 
 trait Favoritable
 {
+
+    protected static function bootFavoritable()
+    {
+        static::deleting(function ($model){
+           $model->favorites->each->delete();
+        });
+    }
     /**
      * A Post can be favorited.
      *
@@ -45,5 +52,26 @@ trait Favoritable
             return $this->favorites()->create(['user_id' => auth()->user()->id]);
 
         }
+    }
+
+    /**
+     * UnFavorite the current post.
+     *
+     * @return mixed
+     */
+    public function unFavorite()
+    {
+            $attributes = ['user_id' => auth()->id()];
+            return $this->favorites()->where($attributes)->get()->each->delete();
+    }
+
+    public function getFavoritesCountAttribute()
+    {
+        return $this->favorites->count();
+    }
+
+    public function getIsFavoritedAttribute()
+    {
+        return $this->isFavorited();
     }
 }

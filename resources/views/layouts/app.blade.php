@@ -12,6 +12,18 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+
+    <style>
+        [v-cloak] { display: none; }
+    </style>
+    <script type="text/javascript">
+        window.Globals =  {!!
+         json_encode([
+            'signedIn' => Auth::check(),
+            'user' => Auth::user()
+        ])
+        !!};
+    </script>
 </head>
 <body style="padding-bottom:100px;">
     <div id="app">
@@ -105,10 +117,13 @@
 
         <main class="py-4">
             @yield('content')
+
+            <flash message="{{ session('flash') }}"></flash>
         </main>
     </div>
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}"></script>
+
 </body>
 </html>

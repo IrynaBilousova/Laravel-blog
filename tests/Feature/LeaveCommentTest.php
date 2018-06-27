@@ -37,4 +37,53 @@ class LeaveCommentTest extends TestCase
 
         $this->post($post->path() , $comment->toArray())->assertSessionHasErrors('text');
     }
+
+    public function testUnathorizedUsersCannotDeleteReplies()
+    {
+        $this->expectException('Illuminate\Auth\AuthenticationException');
+        $comment = create('App\Comment');
+
+        $this->delete("/comments/{$comment->id}")
+            ->assertRedirect('login');
+    }
+
+
+    public function testAuthorizedButNotAnAuthorCannotDeleteComments()
+    {
+        $this->expectException('Illuminate\Auth\Access\AuthorizationException');
+        $comment = create('App\Comment');
+
+        $this->signIn()
+            ->delete("/comments/{$comment->id}");
+    }
+
+    public function testAuthorizedAndAuthorCanDeleteComments()
+    {
+        $this->signIn();
+
+
+        $comment = create('App\Comment', [
+            'user_id' => auth()->user()->id
+        ]);
+
+
+        $this->delete("/comments/{$comment->id}")->assertStatus(302);
+        $this->assertDatabaseMissing('comments', ['id' => $comment->id]);
+    }
+
+    public function testAuthorizedAndAuthorCanUpdateComments()
+    {
+        $this->signIn();
+
+
+        $comment = create('App\Comment', [
+            'user_id' => auth()->user()->id
+        ]);
+
+
+        $this->patch("/comments/{$comment->id}", [ 'text' => 'Changed text.']);
+        $this->assertDatabaseHas('comments', ['id' => $comment->id, 'text' => 'Changed text.']);
+    }
+
+
 }

@@ -14,10 +14,14 @@ class FavoriteController extends Controller
         $this->middleware('auth');
     }
 
-    public function store(Category $category, $postId)
+    public function store(Category $category, Post $post)
     {
-        $post = Post::find($postId);
         $post->favorite();
         return back();
+    }
+
+    public function destroy(Category $category, Post $post)
+    {
+        $post->unFavorite();
     }
 }

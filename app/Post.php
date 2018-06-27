@@ -2,11 +2,13 @@
 
 namespace App;
 
+use function foo\func;
 use Illuminate\Database\Eloquent\Model;
 use App\Filters\Postfilters;
 
 class Post extends Model
 {
+    use RecordsActivity;
     use Favoritable;
 
     /**
@@ -15,6 +17,15 @@ class Post extends Model
      * @var array
      */
     protected $guarded =[];
+
+    /**
+     * The relations to eager load on every query.
+     *
+     * @var array
+     */
+    protected $with = ['author', 'favorites', 'category'];
+
+    protected $appends = ['favoritesCount', 'isFavorited'];
 
     /**
      * Boots the model.
@@ -27,7 +38,7 @@ class Post extends Model
                 $builder->withCount('comments');
         });
 
-        static::deleting(function($post){
+        static::deleting(function ($post) {
             $post->comments()->delete();
         });
     }
@@ -69,7 +80,7 @@ class Post extends Model
      */
     public function addComment($comment)
     {
-        $this->comments()->create($comment);
+        return $this->comments()->create($comment);
     }
 
     /**

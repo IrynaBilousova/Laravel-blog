@@ -63,10 +63,11 @@ class PostController extends Controller
             'category_id' => 'required|exists:categories,id'
         ]);
 
-        $attr = $request->all();
+        $attr = $request->except(['favoritesCount', 'favorites', 'isFavorited']);
         $attr['user_id'] = auth()->id();
         $post = Post::create($attr);
-        return redirect($post->path());
+        return redirect($post->path())
+            ->with('flash', 'Your post has been published.');
     }
 
     /**

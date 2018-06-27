@@ -6,6 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Comment extends Model
 {
+
+    use Favoritable, RecordsActivity;
+
+    protected $with = ['author'];
     protected $guarded = [];
 
     public function post()

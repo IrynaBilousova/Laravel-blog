@@ -46,10 +46,15 @@ class CommentController extends Controller
         ]);
 
         $post = Post::find($id);
-        $post->addComment([
+
+        $comment = $post->addComment([
            'text' => $request->input('text'),
             'user_id' => auth()->id(),
         ]);
+
+        if (request()->expectsJson()) {
+            return $comment->load('author');
+        }
         return back();
     }
 
@@ -84,7 +89,11 @@ class CommentController extends Controller
      */
     public function update(Request $request, Comment $comment)
     {
-        //
+        $this->authorize('update', $comment);
+
+        $comment->update(['text' => $request['text']]);
+
+        return back();
     }
 
     /**
@@ -95,6 +104,14 @@ class CommentController extends Controller
      */
     public function destroy(Comment $comment)
     {
-        //
+        $this->authorize('update', $comment);
+
+        $comment->delete();
+
+        if (request()->expectsJson()) {
+            return response(['status' => 'Comment deleted.']);
+        }
+
+        return back();
     }
 }
