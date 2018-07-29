@@ -76,4 +76,14 @@ class ViewPostTest extends TestCase
 
 
     }
+
+    public function testAUserCanRequestAllCommentsForAGivenPost()
+    {
+        $post = create('App\Post');
+        create('App\Comment', ['post_id' => $post->id], 2);
+        $response = $this->getJson($post->path() . '/comments')->json();
+
+        $this->assertCount(1, $response['data']);
+        $this->assertEquals(2, $response['total']);
+    }
 }

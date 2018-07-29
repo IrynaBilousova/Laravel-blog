@@ -28,10 +28,11 @@
 </template>
 <script>
     import moment from 'moment';
+
     export default {
         props: ['data'],
-        data() {
 
+        data() {
             return {
                 editing: false,
                 id: this.data.id,

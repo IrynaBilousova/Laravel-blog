@@ -24,6 +24,7 @@ Route::get('posts/{category}', 'PostController@index')->name('posts_with_categor
 Route::get('posts/{category}/{post}', 'PostController@show')->name('show_post');
 Route::delete('posts/{category}/{post}', 'PostController@destroy');
 Route::post('posts/{category}/{post}' , 'CommentController@store');
+Route::get('posts/{category}/{post}/comments' , 'CommentController@index');//TODO: change route to more appropriate
 Route::post('posts/{category}/{post}/favorites' , 'FavoriteController@store');
 Route::delete('posts/{category}/{post}/favorites' , 'FavoriteController@destroy');
 Route::post('posts', 'PostController@store');

@@ -4,7 +4,7 @@
             <comment :data="comment" @deleted="remove(index)"></comment>
         </div>
 
-        <new-comment endpoint="/posts/aut-illo-accusamus-deleniti-facilis-quae-suscipit/254" @created="add"></new-comment>
+        <new-comment endpoint="endpoint" @created="add"></new-comment>
     </div>
 </template>
 
@@ -20,19 +20,33 @@
 
         data() {
             return {
-                items: this.data,
+                dataSet: false,
+                items: [],
                 endpoint: location.pathname + '/comments'
             }
         },
 
         methods: {
-            add(comment)
-            {
+
+            fetch() {
+                axios.get(this.url())
+                    .then(this.refresh);
+            },
+
+            url() {
+                return `${location.pathname}/comments`
+            },
+
+            refresh({data}) {
+
+            },
+
+            add(comment) {
                 this.items.push(comment);
                 this.$emit('added');
             },
 
-            remove(index){
+            remove(index) {
                 this.items.splice(index, 1);
 
                 this.$emit('removed');

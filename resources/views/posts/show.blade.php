@@ -35,10 +35,6 @@
                             <comments :data="{{ $post->comments }}"
                                       @removed="commentsCount--"
                                       @added="commentsCount++"></comments>
-
-                            @foreach($comments as $comment)
-                            @endforeach
-                            {{$comments->links()}}
                         </p>
 
                     </div>

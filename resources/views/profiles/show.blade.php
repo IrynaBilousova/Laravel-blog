@@ -7,12 +7,19 @@
             <h1>{{$profileUser->name}} </h1>
             <br>since  {{ $profileUser->created_at->diffForHumans() }}
             <hr>
-            @forelse($activities as $activity)
-                @include("profiles.activities.{$activity->type}")
+            @forelse($posts as $post)
+                <div class="card">
+                    <div class="card-header">
+                        <h2>{{$post->title}}</h2>
+                    </div>
+                    <div class="card-body">
+                        <p>{{$post->body}}</p>
+                    </div>
+                </div>
             @empty
-                <p>There is no activity for this user yet.</p>
+                <p>There is no posts for this user yet.</p>
             @endforelse
-            {{ $activities->links() }}
+            {{ $posts->links() }}
         </div>
     </div>
 @stop

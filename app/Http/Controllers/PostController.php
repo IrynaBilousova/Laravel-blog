@@ -78,8 +78,7 @@ class PostController extends Controller
      */
     public function show($category, Post $post)
     {
-        $comments = $post->comments()->with('author')->paginate(10);
-        return view('posts.show', compact(['post' , 'comments' ]));
+        return view('posts.show', compact('post'));
     }
 
     /**
