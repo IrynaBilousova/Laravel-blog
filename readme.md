@@ -1,1 +1,1 @@
-This is out first laravel proejct
+This is social network for bloggers.
